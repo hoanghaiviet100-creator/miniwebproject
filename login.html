@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>ScholarHub Login</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+
+  <!-- FirebaseUI -->
+  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/6.0.2/firebaseui.css" />
+  <script src="https://cdn.firebase.com/libs/firebaseui/6.0.2/firebaseui.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #firebaseui-auth-container {
+      width: 360px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="firebaseui-auth-container"></div>
+
+<script>
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCbldeGuBQnsEZZRBbFFnJuSDUX8mjBpTQ",
+    authDomain: "ggsite-31aa0.firebaseapp.com",
+    projectId: "ggsite-31aa0",
+    storageBucket: "ggsite-31aa0.appspot.com",
+    messagingSenderId: "25472410016",
+    appId: "1:25472410016:web:077de376969657287844c5",
+    measurementId: "G-G8HMFKYCL3"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  // FirebaseUI config
+  const uiConfig = {
+    signInOptions: [
+      firebase.auth.EmailAuthProvider.PROVIDER_ID
+    ],
+    signInSuccessUrl: "/home",  // đổi link này thành trang Google Site sau login
+    callbacks: {
+      signInSuccessWithAuthResult: function(authResult) {
+        const user = authResult.user;
+
+        if (!user.emailVerified) {
+          user.sendEmailVerification();
+          alert("Bạn cần xác minh email trước khi đăng nhập.\nHãy kiểm tra hộp thư của bạn.");
+          firebase.auth().signOut();
+          return false; // chặn login
+        }
+
+        return true; // cho phép redirect
+      }
+    }
+  };
+
+  const ui = new firebaseui.auth.AuthUI(firebase.auth());
+  ui.start("#firebaseui-auth-container", uiConfig);
+</script>
+
+</body>
+</html>
